@@ -1,4 +1,5 @@
 require "bundler/setup"
+require "cancancan"
 require "cancan_explainer"
 
 RSpec.configure do |config|

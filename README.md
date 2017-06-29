@@ -1,41 +1,59 @@
 # CancanExplainer
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/cancan_explainer`. To experiment with that code, run `bin/console` for an interactive prompt.
+Troubleshoot [cancan][1] rules.
 
-TODO: Delete this and the text above, and describe your gem
+## Install
 
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'cancan_explainer'
+```
+# Gemfile
+gem "cancancan"
+gem "cancan_explainer"
 ```
 
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install cancan_explainer
+The order matters.
 
 ## Usage
 
-TODO: Write usage instructions here
+Consider these bananas:
 
-## Development
+```
+class Banana
+  attr_reader :color
+  def initialize(color)
+    @color = color
+  end
+end
+green_banana = Banana.new("green")
+yellow_banana = Banana.new("yellow")
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Consider the following [ability definition][2]:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```
+# app/models/ability.rb
+class Ability
+  include CanCan::Ability
+  def initialize(user)
+    can :eat, Banana
+    cannot :eat, Banana, color: "green"
+  end
+end
+ability = Ability.new(nil)
+ability.can? :eat, yellow_banana
+ability.can? :eat, green_banana
+```
 
-## Contributing
+This [ability definition][2] is pretty simple, but they are often much more
+complex, and it can be hard to figure out which rules are relevant to a query.
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/cancan_explainer. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+```
+CanCanExplainer.explain { ability.can? :eat, green_banana }.to_s
+#=> "eat #<Banana:0x007fa2190083a0> [] /../app/models/ability.rb:5:in `initialize'"
+```
 
+This is just a proof-of-concept, and the output can certainly be improved, but
+they key piece of information here is the file and line number where the rule
+was defined.
 
-## License
-
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
+[1]: https://github.com/CanCanCommunity/cancancan
+[2]: https://github.com/CanCanCommunity/cancancan/wiki/defining-abilities
