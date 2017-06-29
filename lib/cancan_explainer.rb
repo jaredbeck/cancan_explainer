@@ -1,5 +1,5 @@
 require "cancan_explainer/version"
 
-module CancanExplainer
+module CanCanExplainer
   # Your code goes here...
 end
