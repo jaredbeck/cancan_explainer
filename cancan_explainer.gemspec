@@ -10,6 +10,7 @@ Gem::Specification.new do |spec|
   spec.email = ["jared@jaredbeck.com"]
   spec.summary = "Troubleshoot cancan rules"
   spec.license = "LGPL-3.0"
+  spec.homepage = "https://github.com/jaredbeck/cancan_explainer"
   spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r(^spec/)) }
   spec.require_paths = ["lib"]
   spec.required_ruby_version = ">= 2.2.0"
